@@ -1,24 +1,28 @@
 import { ProjectController } from "./../controller/ProjectController";
 import { Router } from "express";
-import  sprint  from "./sprint";
+import { checkJwt } from "../middleware/jwt";
+import { checkRole } from "../middleware/role";
 
 const router = Router();
 
-//router.use('/sprint', sprint)//AQUI SE VA ANIDANDO
+//YA JALA TODO
 
-// Get all project
-router.get('/', ProjectController.getAllP);
+// MIS PROYECTOS
+router.get('/misProyectos',[checkJwt] , ProjectController.getMisProyectos);
 
 // Get one project
-router.get('/:id', ProjectController.getByIdP);
+router.get('/',[checkJwt,checkRole(['ProductOwner'])], ProjectController.getByIdP);
 
 // Create a new project
-router.post('/', ProjectController.newProject);
+router.post('/new',[checkJwt] , ProjectController.newProject);
+
+//GENERAR INIVITACIONES
+router.post('/generarInv',[checkJwt,checkRole(['ProductOwner'])], ProjectController.invitar);
 
 // Edit project
-router.patch('/:id', ProjectController.editProject);
+router.patch('/editProject', [checkJwt, checkRole(['ProductOwner'])] ,ProjectController.editProject);
 
 // Delete
-router.delete('/:id', ProjectController.deleteProject);
+router.delete('/deleteProject', [checkJwt, checkRole(['ProductOwner'])], ProjectController.deleteProject);
 
 export default router;

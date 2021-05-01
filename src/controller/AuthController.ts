@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { User } from "../entity/User";
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
-import { validate } from "class-validator";
 
 export class AuthController {
 
@@ -30,7 +29,7 @@ export class AuthController {
         }
 
         const token =jwt.sign({userId:user.id, email: user.email}, config.jwtSecret,{expiresIn : '1800s'});
-
+        //SE LE ENVIA EL FRONT
         res.json(  {msg:"OK", 
                     token,
                     userId:user.id});

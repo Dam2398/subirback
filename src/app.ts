@@ -24,7 +24,6 @@ createConnection().then(async () => {//PROMESA
     // start express server
     app.listen(PORT, ()=>
         console.log(`Server running on port ${PORT}`));
-    
 
 
 

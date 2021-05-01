@@ -1,26 +1,29 @@
 import { SprintController } from "./../controller/SprintController";
 import { Router } from "express";
+import { checkRole } from "../middleware/role";
+import { checkJwt } from "../middleware/jwt";
 
 const router = Router();
 
+// Solo un sprint
+router.get('/byid/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.getByIdS);
 
-// Get all project
-router.get('/', SprintController.getAllS);
+// Get all project sprints|chi
+router.get('/sprintsProject/',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.getAllS);
 
 // Get one project
 //router.get('/:id', SprintController.getByIdS);
-router.get('/registro/', SprintController.prueba2);
+
+//SPRINT QUE SE MUESTRA DESPUES DE SELECCIONAR EL PROYECTO|chi
+router.get('/SprintActual/',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])], SprintController.MostrarSprintActual);
 
 // Create a new project
-router.post('/', SprintController.newSprint);
+router.post('/newSprint',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.newSprint);
 
 // Edit project
-router.patch('/:id', SprintController.editSprint);
+router.patch('/edit/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.editSprint);
 
 // Delete
-router.delete('/:id', SprintController.deleteSprint);
-
-//PRUBA
-router.post('/:project',SprintController.newSprintPro);
+router.delete('/delete/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.deleteSprint);
 
 export default router;

@@ -1,26 +1,37 @@
 import { TareaController } from "./../controller/TareaCrontoller";
 import { Router } from "express";
+import { checkJwt } from "../middleware/jwt";
+import { checkRole } from "../middleware/role";
 
 const router = Router();
 
 
-// Get all project
-router.get('/', TareaController.getAllT);
+//Todas mis tareas
+router.get('/misTareas',[checkJwt, checkRole(['ScrumMaster','Developer'])], TareaController.getMisTareas);
+
+//Tareas sin asignar
+router.get('/tareasNoAsignadas',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])],TareaController.getTareasNulas);
+
+//Get All
+router.get('/',[checkJwt, checkRole(['ProductOwner', 'Developer', 'ProductOwner'])] ,TareaController.getAll);
+
+//Tareas asignadas
+router.get('/tareasAsignadas',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])], TareaController.getAsignadas)
 
 // Get one project
-router.get('/:id', TareaController.getByIdT);
+router.get('/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner','Developer'])], TareaController.getByIdT);
 
 // Create a new project
-router.post('/', TareaController.newTarea);
+//router.post('/', TareaController.newTarea);
 
 // Edit project
-router.patch('/:id', TareaController.editTarea);
+router.patch('/edit/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner','Developer'])], TareaController.editTarea);
 
 // Delete
-router.delete('/:id', TareaController.deleteTarea);
+router.delete('/delete/:idt',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], TareaController.deleteTarea);
 
 
 //NUEVA TAREA
-router.post('/', TareaController.newTareaPro);
+router.post('/nuevaTarea',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], TareaController.newTarea);
 
 export default router;

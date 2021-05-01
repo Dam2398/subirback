@@ -52,7 +52,7 @@ export class Tarea  extends BaseEntity{
     @UpdateDateColumn({type: "timestamp"})
     fechaUpdate: Date;
 
-    @Column()
+    @Column({nullable:true})
     urpId: number;
     @ManyToOne(() => Urp, urp => urp.tareau ,{onDelete:"CASCADE",onUpdate:"CASCADE"})
     @JoinColumn({ name : "urpId" })
