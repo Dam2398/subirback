@@ -135,7 +135,7 @@ export class TareaController {
         }
     
     }
-    //SOLO UN PROYECTO
+    
     static getByIdT = async(req: Request, res: Response)=>{
         const projectId:number =+req.query.projectId;
         const sprintId:number =+req.query.sprintId;
@@ -276,7 +276,7 @@ export class TareaController {
 
 
         //ver si esta asociado al proyecto
-        const urpRepository = getRepository(Urp);
+/*         const urpRepository = getRepository(Urp);
         let urp;
         try {//"urp.projectId=:projectId",{projectId:projectId} debe ir pegado los ":"
             urp =await urpRepository.createQueryBuilder("urp").where("urp.userId =:userId",{userId:userId}).andWhere("urp.projectId=:projectId",{projectId:projectId}).getOne();
@@ -285,7 +285,7 @@ export class TareaController {
             console.log(error);
             res.status(421).json({mgs:"posiblemente no es tu proyecto"});
         }
-
+ */
         //Verificar si el sprint esta asociado al proyecto
         const sprintRepository = getRepository(Sprint);
         let sprint;

@@ -11,13 +11,17 @@ const router = Router();
 router.get('/misProyectos',[checkJwt] , ProjectController.getMisProyectos);
 
 // Get one project
-router.get('/',[checkJwt,checkRole(['ProductOwner'])], ProjectController.getByIdP);
+router.get('/',[checkJwt,checkRole(['ProductOwner','ScrumMaster','Developer'])], ProjectController.getByIdP);
 
 // Create a new project
 router.post('/new',[checkJwt] , ProjectController.newProject);
 
 //GENERAR INIVITACIONES
-router.post('/generarInv',[checkJwt,checkRole(['ProductOwner'])], ProjectController.invitar);
+router.post('/generarInv', [checkJwt,checkRole(['ProductOwner'])], ProjectController.invitar);
+//[checkJwt,checkRole(['ProductOwner'])],
+
+//DES
+router.post('/des', [checkJwt], ProjectController.desencriptar);
 
 // Edit project
 router.patch('/editProject', [checkJwt, checkRole(['ProductOwner'])] ,ProjectController.editProject);

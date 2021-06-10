@@ -32,8 +32,8 @@ export class UserController {
           let user = await userRepository.findOneOrFail(id);
           if(!user){
             res.status(400).json( { msg: 'No existe el usuario'} )
-        }
-          res.json(user);
+          }
+          res.status(200).json(user);
         } catch (error) {
           res.status(500).json({msg:'hubo un error'});
         }
@@ -66,7 +66,7 @@ export class UserController {
             return res.status(409).json({msg:"Username alredy exist"});
         }
         // All ok
-        res.send('User created');
+        res.status(201).json({msg:"User created"});
       };
     
       //EDTAR USUARIO

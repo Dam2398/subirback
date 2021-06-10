@@ -7,13 +7,13 @@ const router = Router();
 
 
 //Todas mis tareas
-router.get('/misTareas',[checkJwt, checkRole(['ScrumMaster','Developer'])], TareaController.getMisTareas);
+router.get('/misTareas',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])], TareaController.getMisTareas);
 
 //Tareas sin asignar
 router.get('/tareasNoAsignadas',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])],TareaController.getTareasNulas);
 
 //Get All
-router.get('/',[checkJwt, checkRole(['ProductOwner', 'Developer', 'ProductOwner'])] ,TareaController.getAll);
+router.get('/',[checkJwt, checkRole(['ProductOwner', 'Developer', 'ScrumMaster'])] ,TareaController.getAll);
 
 //Tareas asignadas
 router.get('/tareasAsignadas',[checkJwt, checkRole(['ScrumMaster','Developer','ProductOwner'])], TareaController.getAsignadas)

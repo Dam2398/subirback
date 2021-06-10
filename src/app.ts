@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import * as express from "express";
-import {Request, Response} from "express";
 import * as helmet from 'helmet';
 import cors = require("cors");//WACHA
 import routes from './routes/index';
 
+ 
 
 const PORT = process.env.PORT ||3000;
 

@@ -25,6 +25,8 @@ export const checkRole = (roles: Array<string>) => {
 
         if (roles.includes(rol)) {
             //res.json(rol);
+            console.log(roles,'hola')
+            console.log(rol)
             next();
         } else {
             res.status(401).json({ message: 'Not Authorized, por tu rol' });

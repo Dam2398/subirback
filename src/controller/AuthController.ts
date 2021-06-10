@@ -32,7 +32,8 @@ export class AuthController {
         //SE LE ENVIA EL FRONT
         res.json(  {msg:"OK", 
                     token,
-                    userId:user.id});
+                    userId:user.id,
+                    username:user.firstName});
     }
    
 }

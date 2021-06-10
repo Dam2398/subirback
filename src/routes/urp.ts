@@ -10,7 +10,7 @@ const router = Router();
 router.get('/equipo',[checkJwt,checkRole(['ProductOwner','ScrumMaster','Developer'])], UrpController.GetEquipoScrum);//Todos pueden ver al equipo
 
 // Get one user
-router.get('/equipo/miembro/:id',[checkJwt,checkRole(['ProductOwner'])], UrpController.GetMiembroEquipo);//Ya jala
+router.get('/equipo/miembro/:id',[checkJwt,checkRole(['ProductOwner','ScrumMaster','Developer'])], UrpController.GetMiembroEquipo);//Ya jala
 
 // Create a new miembro
 router.post('/newUrp',[checkJwt], UrpController.newUrp);

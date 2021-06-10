@@ -6,10 +6,10 @@ import { checkJwt } from "../middleware/jwt";
 const router = Router();
 
 // Solo un sprint
-router.get('/byid/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.getByIdS);
+router.get('/byid/:id',[checkJwt, checkRole(['ScrumMaster','ProductOwner','Developer'])], SprintController.getByIdS);
 
 // Get all project sprints|chi
-router.get('/sprintsProject/',[checkJwt, checkRole(['ScrumMaster','ProductOwner'])], SprintController.getAllS);
+router.get('/sprintsProject/',[checkJwt, checkRole(['ProductOwner','ScrumMaster','Developer'])], SprintController.getAllS);
 
 // Get one project
 //router.get('/:id', SprintController.getByIdS);

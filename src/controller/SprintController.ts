@@ -68,13 +68,7 @@ export class SprintController {
              res.status(400).json(errors);
         }
 
-        const urpRepository = getRepository(Urp);
-        let urp;
-        try {
-            urp =await urpRepository.createQueryBuilder("urp").where("urp.userId =: userId",{userId:userId}).andWhere("urp.projectId=:projectId",{projectId:projectId}).getOne();
-        } catch (error) {
-            res.status(420).json({mgs:"posiblemente no es tu proyecto"});
-        }
+
         //Si esta asociado en el proyecto se guarda el sprint
         const projectRepository = getRepository(Sprint);
         let sp;

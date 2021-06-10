@@ -6,6 +6,10 @@ import { Urp } from "../entity/Urp";
 import * as bcrypt from 'bcryptjs';
 import * as nodemailer from "nodemailer";
 import { google } from "googleapis";
+import { User } from "../entity/User";
+var atob = require('atob');
+var btoa = require('btoa');
+
 
 export class ProjectController {
 
@@ -91,14 +95,58 @@ export class ProjectController {
                   projectId:pro.id});
     };
 
+    //DES
+    static desencriptar =async(req: Request, res: Response)=>{
+
+      const { projectId, rol, email } = req.body;
+
+      const userRepository = getRepository(Project);
+      let proyecto
+
+      try {
+        let proDes:any =atob(projectId);
+        let rolDes:any= atob(rol);
+        let emailDes:any = atob(email);
+        try {
+          proyecto = await userRepository.findOneOrFail(proDes);
+          if(!proyecto){
+            res.status(400).json( { msg: 'No existe el proyecto'} )
+          }
+        } catch (error) {
+          res.status(500).json({msg:'hubo un error'});
+        } 
+        let nombre = proyecto['name'];
+        //console.log(proyecto['name'])
+        res.status(210).json({proDes,rolDes,emailDes,nombre});
+
+      } catch (error) {
+        console.log(error);
+        res.status(503).json({msg:'Datos vacios'});
+      }
+
+    }
+
     //INVITACIONES
     static invitar = async(req: Request, res: Response)=>{
+      const userId =+req.query.userId;//          --->Para obetner el nombre del PO
       const projectId =+req.query.projectId;
       let equipo:[];//RECIBIR VARIOS DICCIONARIOS
       let url:any[]=['url'];
       let conf:string[];
-      equipo=req.body;
-      //console.log(equipo);//Si jala
+      equipo=req.body;//equipo
+      
+      //aqui saca el nombre del PO
+      const userRepository = getRepository(User);
+      let PO;
+      let nombre;
+      try {
+        PO = await userRepository.findOneOrFail(userId)
+        nombre = PO.firstName;
+      } catch (error) {
+        res.status(500).json({msg:'hubo un error'});
+      }
+
+
       //////////////////////////////////////////////////////////////
       const CLIENT_ID = '304122663052-74ktc04obvdpepe9bj6av56sm2ut86nc.apps.googleusercontent.com';
       const CLIENT_SECRET = 'jmhTZZxeYeZrOgR1tpmP5jzY';
@@ -109,40 +157,72 @@ export class ProjectController {
       oAuth2Client.setCredentials({refresh_token: REFRESH_TOKEN});
       
       try {
-         const accesToken = await oAuth2Client.getAccessToken();
+        //const accesToken = await oAuth2Client.getAccessToken();
 
         const transport = nodemailer.createTransport({
-          service: 'gmail',
+          host: 'smtp.zoho.com',
+          port: 465,
+          secure: true,
+          ignoreTLS: true,
           auth: {
-            type: 'OAuth2',
-            user: 'geproys@gmail.com',
-            clientId: CLIENT_ID,
-            clientSecret: CLIENT_SECRET,
-            refreshToken: REFRESH_TOKEN,
-            accesToken: accesToken
+            //type: 'OAuth2',
+            user: 'geproys@geproys.epizy.com',
+            pass: 'edudamdan'
+            //clientId: CLIENT_ID,
+            //clientSecret: CLIENT_SECRET,
+            //refreshToken: REFRESH_TOKEN,
+            //accesToken: accesToken
+          },
+          tls: {
+            rejectUnauthorized: false
           }
         });
+
+        transport.verify((e: any, success: any)=>{
+          if (e) console.error(e);
+          console.log('Your config is correct');
+        })
 
         for (let index = 0; index < equipo.length; index++) {
 
           const correo = equipo[index]['email'];
           const rol = equipo[index]['rol'];
-        
-          //url[index] = {'url' :'http://localhost:3000/urp/newUrp/?projectId='+projectId+'&rol='+rol+'&email='+correo};
-        
+          ///Encriptar
+          let proEnc: any = btoa(projectId);
+          let rolEnc: any= btoa(rol);
+          let emailEnc: any= btoa(correo);
+
+
+
+          //url[index] = {'url' :'http://localhost:3000/urp/newUrp/?projectId='+proEnc+'&rol='+rolEnc+'&email='+emailEnc};
+          url[index] = {'url' :'http://localhost:4200/Invitacion?projectId='+proEnc+'&rol='+rolEnc+'&email='+emailEnc};
+          //
           const mailOptions = {
-            from: 'GePROYS 🔥🥵😈 <geproys@gmail.com>',
+            from: 'GePROYS 🔥🥵😈 <geproys@geproys.epizy.com>',
             to: correo,
             subject: 'Invitacion ',
             text: 'Hello from gmail using API',
-            html: `<h1>Te han invitado a participar en un proyecto 😄 con el rol ${rol} </h1>`,
+            html: `
+            <div style=" margin: 0 auto; width: 80%; ">
+              <div>
+                <h2>${nombre} te ha invitado a participar en un proyecto en GeProys 😄</h2>
+              </div>
+              <div>
+                <p>GeProys es una herramienta para que los equipos de trabajo que desarrollan proyectos, administren las distintas tareas que puedan llegar a tener los integrantes del mismo, todo esto bajo conceptos e ideas de la metodología SCRUM</p>
+                <p><b>Una herramienta tan capaz y tan apta como para que tenga usos profesionales</b>, tan fácil e intuitiva de usar para tener usos escolares</p>
+              </div>
+              <div>
+                <p>Ingresa al siguiente link: http://localhost:4200/Invitacion?projectId=${proEnc}&rol=${rolEnc}&email=${emailEnc}</p>
+              </div>
+            </div>`,
           };
-          const result = transport.sendMail(mailOptions);
+          const result = await transport.sendMail(mailOptions);
           console.log('Email sent...', result);//PARA MOSTRAR LAS PROMESAS DEBES LLAMAR A LA FUNCION Y USAR THEN 
           //conf[index] = correo;
           
         }
-        res.status(250).json({msg:`Se enviaron todos los correos`});
+
+       res.status(250).json({msg:`Se enviaron todos los correos`});
       } catch (error) {
         console.log(error);
         res.status(550).json({msg:'Hubo un error email'});

@@ -73,6 +73,10 @@ export class UrpController {
             res.status(400).json({ msg: 'email incorrect!!'}); 
         }
 
+        
+
+
+
 
         //SI TODO VA BIEN AISGNAMOS LOS VALORES
         const urp = new Urp();
@@ -85,9 +89,11 @@ export class UrpController {
         if (errors.length > 0) {
             res.status(400).json(errors);
         }
+        
 
         //SI TODO VA BIEN GUARDAMOS AL TRABAJADOR
         const urpRepository = getRepository(Urp);
+        
 
         try {
             await urpRepository.save(urp);
@@ -95,7 +101,7 @@ export class UrpController {
             console.log(error);
             res.status(409).json({msg:"Urp alredy exist"});
         }
-        res.send('Urp created')
+        res.status(250).json({msg:"Aceptado"})
     };
 
     static deleteUrp = async (req: Request, res: Response) => {
